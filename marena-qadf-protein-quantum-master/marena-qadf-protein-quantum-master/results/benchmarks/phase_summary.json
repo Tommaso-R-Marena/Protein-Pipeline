@@ -1,0 +1,179 @@
+{
+  "project": "QADF: Hybrid Quantum-Classical Protein Structure Prediction",
+  "target_subproblem": "Side-Chain Rotamer Optimization",
+  "quantum_simulation_note": "ALL QUANTUM RESULTS ARE CLASSICALLY SIMULATED",
+  "quantum_backend": "PennyLane default.qubit v0.44.1",
+  "completion_status": "ALL PHASES COMPLETE",
+  "phases": {
+    "phase0": {
+      "status": "complete",
+      "description": "Literature verification",
+      "files": ["results/logs/phase0_literature_verified.md"],
+      "key_outputs": "15 verified references with DOIs/arXiv IDs"
+    },
+    "phase1": {
+      "status": "complete",
+      "description": "Scientific Positioning Memo",
+      "files": ["paper/phase1_positioning_memo.md"],
+      "key_outputs": "Problem definition, novelty gap analysis, AlphaFold gap analysis, dataset selection"
+    },
+    "phase2": {
+      "status": "complete",
+      "description": "QADF Framework — 8 subproblem scoring table + decision tree",
+      "files": ["paper/phase2_qadf.md"],
+      "key_outputs": "Full 9-criterion scoring table, decision tree, side-chain rotamer classified A, backbone folding classified C"
+    },
+    "phase3": {
+      "status": "complete",
+      "description": "Model Architecture Specification",
+      "files": ["paper/phase3_model_spec.md"],
+      "key_outputs": "EGNN + 8-qubit PQC architecture, loss function, training config, 6-condition ablation plan"
+    },
+    "phase4": {
+      "status": "complete",
+      "description": "Real Data Implementation",
+      "files": [
+        "data/setup_and_data.py",
+        "results/logs/environment.txt",
+        "data/pdb/1L2Y.pdb",
+        "data/pdb/1UBQ.pdb",
+        "data/rotamers/1L2Y_rotamers.csv",
+        "data/rotamers/1UBQ_rotamers.csv",
+        "data/rotamers/splits.json"
+      ],
+      "key_outputs": {
+        "1L2Y": "20 residues, 17 with chi1, downloaded from RCSB PDB",
+        "1UBQ": "76 residues, 68 with chi1, downloaded from RCSB PDB",
+        "environment": "pennylane=0.44.1, numpy=2.4.4, biopython=1.87, pandas=3.0.2"
+      }
+    },
+    "phase5": {
+      "status": "complete",
+      "description": "QUBO/Ising Encoding",
+      "files": [
+        "data/qubo_encoding.py",
+        "data/qubo/qubo_matrix.npy",
+        "data/qubo/encoding_metadata.json",
+        "data/qubo/all_energies.json"
+      ],
+      "key_outputs": {
+        "qubo_size": "12x12 (4 residues x 3 states)",
+        "ground_truth_rank": "1/81 (GLOBAL MINIMUM)",
+        "ground_truth_energy": -34.0651,
+        "window_residues": "TYR(3), ILE(4), GLN(5), TRP(6)",
+        "ground_truth_states": ["t", "g-", "t", "t"]
+      }
+    },
+    "phase6": {
+      "status": "complete",
+      "description": "Hybrid Optimization Experiments [CLASSICALLY SIMULATED]",
+      "files": [
+        "results/experiments.py",
+        "results/benchmarks/classical_results.json",
+        "results/benchmarks/qaoa_results.json",
+        "results/benchmarks/scaling_study.json",
+        "results/benchmarks/noise_analysis.json"
+      ],
+      "key_outputs": {
+        "exhaustive_optimal_energy": -34.0651,
+        "greedy_energy": -34.0651,
+        "sa_energy": -34.0651,
+        "qaoa_p1_energy_classically_simulated": 93.8285,
+        "qaoa_p2_energy_classically_simulated": 179.3853,
+        "scaling_boundary_qubits": 18,
+        "noise_dep_0001_degradation_pct": 2.6,
+        "noise_dep_001_degradation_pct": 23.3,
+        "classically_simulated": true
+      }
+    },
+    "phase7": {
+      "status": "complete",
+      "description": "Confidence Estimation + Statistical Rigor",
+      "files": [
+        "results/confidence_analysis.py",
+        "results/benchmarks/per_residue_confidence.csv",
+        "results/benchmarks/calibration_metrics.json",
+        "results/benchmarks/bootstrap_cis.json"
+      ],
+      "key_outputs": {
+        "chi1_mae_deg": 19.5,
+        "chi1_mae_ci_95": [12.9, 26.2],
+        "rotamer_accuracy_pct": 100.0,
+        "mean_confidence": 98.5,
+        "ece": 0.0148,
+        "ece_ci_95": [0.0072, 0.0242],
+        "wilcoxon_p_value": 0.0339,
+        "wilcoxon_significant": true,
+        "pearson_r_conf_vs_error": -0.3096
+      }
+    },
+    "phase8": {
+      "status": "complete",
+      "description": "AlphaFold 2 Comparison Table",
+      "files": ["paper/phase8_alphafold_comparison.md"],
+      "key_outputs": {
+        "af2_median_gdt_ts": 92.4,
+        "af2_domains_gt90": "58/92",
+        "af2_failure_t1047s1_d1": 50.47,
+        "af2_chi1_chi2_recovery": "NOT REPORTED in primary paper",
+        "fairness_caveat": "included"
+      }
+    },
+    "phase9": {
+      "status": "complete",
+      "description": "3D Structure Visualization — 10 Figures",
+      "files": [
+        "results/visualization.py",
+        "results/figures/fig1_pipeline.png",
+        "results/figures/fig1_pipeline.pdf",
+        "results/figures/fig2_qadf_taxonomy.png",
+        "results/figures/fig2_qadf_taxonomy.pdf",
+        "results/figures/fig3_scaling_study.png",
+        "results/figures/fig3_scaling_study.pdf",
+        "results/figures/fig4_noise_degradation.png",
+        "results/figures/fig4_noise_degradation.pdf",
+        "results/figures/fig5_reliability_diagram.png",
+        "results/figures/fig5_reliability_diagram.pdf",
+        "results/figures/fig6_confidence_vs_error.png",
+        "results/figures/fig6_confidence_vs_error.pdf",
+        "results/figures/fig7_confidence_profile.png",
+        "results/figures/fig7_confidence_profile.pdf",
+        "results/figures/fig8_qaoa_convergence.png",
+        "results/figures/fig8_qaoa_convergence.pdf",
+        "results/figures/fig9_benchmark_comparison.png",
+        "results/figures/fig9_benchmark_comparison.pdf",
+        "results/figures/fig10_confidence_distribution.png",
+        "results/figures/fig10_confidence_distribution.pdf",
+        "results/figures/captions.md"
+      ]
+    },
+    "phase10": {
+      "status": "complete",
+      "description": "Dynamic Analysis and Limitations",
+      "files": [
+        "paper/phase10_dynamic_or_limits.md",
+        "results/energy_landscape.py",
+        "results/figures/energy_landscape.png",
+        "results/figures/energy_landscape.pdf"
+      ],
+      "key_outputs": {
+        "energy_landscape": "1D chi1 scan at 5-degree resolution for TYR/ILE/GLN/TRP",
+        "resource_boundary_qubits": 18,
+        "resource_boundary_n_residues": 6,
+        "limitations_documented": true
+      }
+    }
+  },
+  "total_files_produced": 47,
+  "key_numerical_results": {
+    "ground_truth_qubo_rank": "1/81 (optimal)",
+    "classical_methods_match_optimal": true,
+    "qaoa_optimal_at_p1_2": false,
+    "chi1_mae": "19.5 degrees (95% CI: [12.9, 26.2])",
+    "rotamer_accuracy": "100% (17/17 residues, 1L2Y)",
+    "calibration_ece": "0.0148 (95% CI: [0.0072, 0.0242])",
+    "wilcoxon_classical_vs_qaoa": "p=0.034 (significant)",
+    "noise_degradation_at_nisq_low": "2.6% at epsilon_2=0.001",
+    "noise_degradation_at_nisq_high": "23.3% at epsilon_2=0.01"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "n_residues": 4,
+  "n_states_per_residue": 3,
+  "n_binary_variables": 12,
+  "residues": [
+    {
+      "index": 0,
+      "res_seq": 3,
+      "res_name": "TYR",
+      "aa1": "Y",
+      "chi1_actual": -148.59,
+      "chi1_bin": "t",
+      "ground_truth_state": 1
+    },
+    {
+      "index": 1,
+      "res_seq": 4,
+      "res_name": "ILE",
+      "aa1": "I",
+      "chi1_actual": -44.72,
+      "chi1_bin": "g-",
+      "ground_truth_state": 0
+    },
+    {
+      "index": 2,
+      "res_seq": 5,
+      "res_name": "GLN",
+      "aa1": "Q",
+      "chi1_actual": -146.48,
+      "chi1_bin": "t",
+      "ground_truth_state": 1
+    },
+    {
+      "index": 3,
+      "res_seq": 6,
+      "res_name": "TRP",
+      "aa1": "W",
+      "chi1_actual": 178.57,
+      "chi1_bin": "t",
+      "ground_truth_state": 1
+    }
+  ],
+  "state_names": [
+    "g-",
+    "t",
+    "g+"
+  ],
+  "state_centroids_deg": [
+    -60.0,
+    180.0,
+    60.0
+  ],
+  "one_hot_penalty_P": 10.0,
+  "encoding_decisions": {
+    "one_hot": "Standard QUBO approach (Agathangelou et al. 2025, REF-02); enables constraint checking via penalty terms",
+    "3_bins": "Covers >90% of Dunbrack rotamer population; tractable qubit count (3n qubits for n residues)",
+    "4_residue_window": "12 qubits = NISQ-feasible; 3^4=81 states = exhaustively enumerable",
+    "lj_potential": "Approximate pairwise energy; real implementation would use PyRosetta scoring (REF-02)",
+    "feasibility": {
+      "n=4": "12 vars, 81 states: tractable exhaustively",
+      "n=6": "18 vars, 729 states: tractable classically",
+      "n=8": "24 vars, 6561 states: tractable classically",
+      "n=10": "30 vars, ~59k states: classical strained",
+      "n=20": "60 vars, ~3.5B states: quantum sim feasible but slow; QPU target",
+      "infeasibility_boundary": "~20-25 qubits for NISQ QPU; ~30-35 qubits for classical statevector sim"
+    }
+  },
+  "qubo_stats": {
+    "min": -9.015004819640055,
+    "max": 20.510310124212953,
+    "n_nonzero": 78,
+    "ground_truth_energy": -34.065120091589804,
+    "min_energy": -34.065120091589804,
+    "ground_truth_rank_of_81": 1
+  },
+  "ground_truth_rank": 1,
+  "ground_truth_is_global_minimum": true,
+  "n_configurations": 81,
+  "ground_truth_energy": -34.065120091589804
+}

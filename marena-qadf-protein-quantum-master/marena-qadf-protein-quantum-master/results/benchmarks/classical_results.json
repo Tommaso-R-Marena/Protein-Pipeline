@@ -1,0 +1,61 @@
+{
+  "method": "exhaustive",
+  "n_residues": 4,
+  "n_states_searched": 81,
+  "optimal_states": [
+    1,
+    0,
+    1,
+    1
+  ],
+  "optimal_energy": -34.065120091589804,
+  "ground_truth_states": [
+    1,
+    0,
+    1,
+    1
+  ],
+  "ground_truth_energy": -34.065120091589804,
+  "matches_gt": true,
+  "runtime_s": 0.00030875205993652344,
+  "greedy": {
+    "states": [
+      1,
+      0,
+      1,
+      1
+    ],
+    "energy": -34.065120091589804,
+    "matches_gt": true,
+    "quality_ratio": 1.0,
+    "runtime_s": 5.459785461425781e-05
+  },
+  "simulated_annealing": {
+    "states": [
+      1,
+      0,
+      1,
+      1
+    ],
+    "energy": -34.065120091589804,
+    "matches_gt": true,
+    "quality_ratio": 1.0,
+    "runtime_s": 0.005553007125854492,
+    "T_start": 10.0,
+    "T_end": 0.1,
+    "n_iter": 500,
+    "convergence_history": [
+      38.51376126330577,
+      -34.065120091589804,
+      -34.065120091589804,
+      -34.065120091589804,
+      -34.065120091589804,
+      -34.065120091589804,
+      -34.065120091589804,
+      -34.065120091589804,
+      -34.065120091589804,
+      -34.065120091589804,
+      -34.065120091589804
+    ]
+  }
+}

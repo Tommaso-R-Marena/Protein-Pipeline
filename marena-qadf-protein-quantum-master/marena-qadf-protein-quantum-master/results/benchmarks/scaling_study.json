@@ -1,0 +1,68 @@
+{
+  "classically_simulated": true,
+  "description": "Scaling of QAOA simulation with window size",
+  "resource_boundary_qubits": 20,
+  "resource_boundary_n_residues": 7,
+  "results": [
+    {
+      "classically_simulated": true,
+      "n_residues": 2,
+      "n_qubits": 6,
+      "n_configs": 9,
+      "exhaustive_time_s": 5.7697296142578125e-05,
+      "exhaustive_optimal_energy": -15.81310576369108,
+      "qaoa_p1_energy": 12.940219064088598,
+      "qaoa_p1_time_s": 1.6771934032440186,
+      "tractable": true,
+      "resource_boundary_note": null
+    },
+    {
+      "classically_simulated": true,
+      "n_residues": 3,
+      "n_qubits": 9,
+      "n_configs": 27,
+      "exhaustive_time_s": 0.0001266002655029297,
+      "exhaustive_optimal_energy": -22.631399043516208,
+      "qaoa_p1_energy": 27.19534880434252,
+      "qaoa_p1_time_s": 3.727492332458496,
+      "tractable": true,
+      "resource_boundary_note": null
+    },
+    {
+      "classically_simulated": true,
+      "n_residues": 4,
+      "n_qubits": 12,
+      "n_configs": 81,
+      "exhaustive_time_s": 0.0005602836608886719,
+      "exhaustive_optimal_energy": -31.032809667162653,
+      "qaoa_p1_energy": 35.858322644805,
+      "qaoa_p1_time_s": 6.728813171386719,
+      "tractable": true,
+      "resource_boundary_note": null
+    },
+    {
+      "classically_simulated": true,
+      "n_residues": 5,
+      "n_qubits": 15,
+      "n_configs": 243,
+      "exhaustive_time_s": 0.0009348392486572266,
+      "exhaustive_optimal_energy": -38.36754663664256,
+      "qaoa_p1_energy": 40.7994614263488,
+      "qaoa_p1_time_s": 15.111895084381104,
+      "tractable": true,
+      "resource_boundary_note": null
+    },
+    {
+      "classically_simulated": true,
+      "n_residues": 6,
+      "n_qubits": 18,
+      "n_configs": 729,
+      "exhaustive_time_s": 0.002846240997314453,
+      "exhaustive_optimal_energy": -47.46882666180156,
+      "qaoa_p1_energy": 45.50663036925147,
+      "qaoa_p1_time_s": 125.12006139755249,
+      "tractable": false,
+      "resource_boundary_note": "Tractability limited by classical statevector simulation memory"
+    }
+  ]
+}

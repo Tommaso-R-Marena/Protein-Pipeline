@@ -1,0 +1,40 @@
+{
+  "classically_simulated": true,
+  "description": "QAOA noise analysis with depolarizing channel",
+  "nisq_error_rates_ref": "REF-11: \u03b5\u2082 ~ 10\u207b\u00b3\u201310\u207b\u00b2 for two-qubit gates",
+  "results": [
+    {
+      "classically_simulated": true,
+      "noise_type": "depolarizing",
+      "noise_parameter": 0.0,
+      "label": "noiseless",
+      "n_qubits_used": 6,
+      "n_residues": 2,
+      "qaoa_energy": 16.81595995878188,
+      "degradation_pct": 0.0,
+      "reference_energy": 16.81595995878188
+    },
+    {
+      "classically_simulated": true,
+      "noise_type": "depolarizing",
+      "noise_parameter": 0.001,
+      "label": "dep_p=0.001",
+      "n_qubits_used": 6,
+      "n_residues": 2,
+      "qaoa_energy": 17.251766842850166,
+      "degradation_pct": 2.591626556774067,
+      "reference_energy": 16.81595995878188
+    },
+    {
+      "classically_simulated": true,
+      "noise_type": "depolarizing",
+      "noise_parameter": 0.01,
+      "label": "dep_p=0.01",
+      "n_qubits_used": 6,
+      "n_residues": 2,
+      "qaoa_energy": 20.730663317028778,
+      "degradation_pct": 23.279690055413706,
+      "reference_energy": 16.81595995878188
+    }
+  ]
+}

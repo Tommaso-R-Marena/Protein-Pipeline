@@ -1,0 +1,52 @@
+{
+  "n_residues_with_chi1": 17,
+  "reliability_diagram": {
+    "bin_edges": [
+      0.0,
+      20.0,
+      40.0,
+      60.0,
+      80.0,
+      100.0
+    ],
+    "bin_accuracies": [
+      null,
+      null,
+      null,
+      null,
+      1.0
+    ],
+    "bin_confidences": [
+      null,
+      null,
+      null,
+      null,
+      0.9852978826931446
+    ],
+    "bin_counts": [
+      0,
+      0,
+      0,
+      0,
+      17
+    ]
+  },
+  "ece": 0.014702117306855444,
+  "ece_bootstrap": {
+    "mean": 0.014797192855676928,
+    "std": 0.0044738804623865105,
+    "ci_95_lo": 0.007177293265689338,
+    "ci_95_hi": 0.024157996445789854
+  },
+  "pearson_conf_vs_error": {
+    "r": -0.3095652090261207,
+    "p": 0.22661262328567203
+  },
+  "spearman_conf_vs_error": {
+    "rho": -0.21841203805984014,
+    "p": 0.399687041108339
+  },
+  "mean_chi1_mae": 19.494705882352935,
+  "mean_rotamer_accuracy": 1.0,
+  "mean_confidence": 98.52978826931445
+}

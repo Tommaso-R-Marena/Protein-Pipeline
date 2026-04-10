@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QADF Explorer — Quantum Amenability Decision Framework</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <style>
+    /* ───── Reset & Base ───── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --surface2:  #21262d;
+      --border:    #30363d;
+      --text:      #e6edf3;
+      --text-muted:#8b949e;
+      --accent:    #58a6ff;
+
+      --cat-a:     #0053D6;
+      --cat-b:     #65CBF3;
+      --cat-c:     #FF7D45;
+
+      --warn-bg:   #2d2200;
+      --warn-border:#d4a017;
+      --warn-text: #ffd54f;
+
+      --radius:    8px;
+      --radius-lg: 12px;
+      --font: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    html { font-size: 15px; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 60px;
+      line-height: 1.6;
+    }
+
+    a { color: var(--accent); }
+
+    /* ───── Header ───── */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-logo svg { flex-shrink: 0; }
+    .header h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .header p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ───── Disclaimer Banner ───── */
+    .disclaimer-global {
+      background: var(--warn-bg);
+      border-bottom: 1px solid var(--warn-border);
+      padding: 10px 32px;
+      font-size: 0.8rem;
+      color: var(--warn-text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ───── Layout ───── */
+    .main-grid {
+      max-width: 1280px;
+      margin: 28px auto 0;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* ───── Panels ───── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+    }
+    .panel-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .panel-title::before {
+      content: '';
+      display: inline-block;
+      width: 3px; height: 14px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* ───── Form Controls ───── */
+    .control-group { margin-bottom: 18px; }
+    .control-group:last-child { margin-bottom: 0; }
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.03em;
+    }
+    select, input[type="range"] {
+      width: 100%;
+    }
+    select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-family: var(--font);
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+    select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(88,166,255,0.2); }
+    select:hover { border-color: #484f58; }
+
+    .slider-wrapper { display: flex; align-items: center; gap: 10px; }
+    input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--surface2);
+      cursor: pointer;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 0 2px rgba(88,166,255,0.25);
+      transition: box-shadow 0.15s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover { box-shadow: 0 0 0 4px rgba(88,166,255,0.3); }
+    input[type="range"]::-moz-range-thumb {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+    }
+    .slider-value {
+      min-width: 28px;
+      text-align: right;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ───── Right Column ───── */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ───── Classification Badge ───── */
+    .classification-panel {
+      display: flex;
+      align-items: stretch;
+      gap: 20px;
+    }
+    .badge-block {
+      flex-shrink: 0;
+      width: 130px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 10px;
+      gap: 6px;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .badge-letter {
+      font-size: 3rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+    .badge-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+    .badge-score {
+      font-size: 0.78rem;
+      font-weight: 600;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+
+    .badge-a { background: rgba(0,83,214,0.2); border: 2px solid var(--cat-a); color: #7aadff; }
+    .badge-a .badge-letter { color: #7aadff; }
+    .badge-b { background: rgba(101,203,243,0.15); border: 2px solid var(--cat-b); color: var(--cat-b); }
+    .badge-b .badge-letter { color: var(--cat-b); }
+    .badge-c { background: rgba(255,125,69,0.15); border: 2px solid var(--cat-c); color: var(--cat-c); }
+    .badge-c .badge-letter { color: var(--cat-c); }
+
+    .classification-detail {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .qubit-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .stat-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+    }
+    .stat-card .stat-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: block;
+      margin-bottom: 3px;
+    }
+    .stat-card .stat-val {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .stat-card .stat-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .stat-val.over { color: var(--cat-c); }
+    .stat-val.ok   { color: #3fb950; }
+
+    /* ───── Disclaimer Box (inline) ───── */
+    .disclaimer-box {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 0.75rem;
+      color: var(--warn-text);
+      line-height: 1.5;
+    }
+
+    /* ───── Two-column content row ───── */
+    .content-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* ───── Radar / Scores ───── */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      max-height: 320px;
+      margin: 0 auto;
+    }
+
+    /* ───── Bottleneck Explanation ───── */
+    .bottleneck-text {
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: #cdd9e5;
+    }
+    .bottleneck-text strong { color: var(--text); }
+    .bottleneck-highlight {
+      display: inline-block;
+      background: rgba(255,125,69,0.15);
+      border-left: 3px solid var(--cat-c);
+      padding: 8px 12px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 10px 0;
+      font-size: 0.83rem;
+      color: #f0a580;
+      font-style: italic;
+    }
+    .recommendation {
+      display: inline-block;
+      background: rgba(0,83,214,0.12);
+      border-left: 3px solid var(--cat-a);
+      padding: 8px 12px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 6px 0 0;
+      font-size: 0.83rem;
+      color: #7aadff;
+    }
+
+    /* ───── Scaling Table ───── */
+    .scaling-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .scaling-table th {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .scaling-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      font-variant-numeric: tabular-nums;
+    }
+    .scaling-table tr:last-child td { border-bottom: none; }
+    .scaling-table tr.highlight-row td {
+      background: rgba(88,166,255,0.06);
+      font-weight: 700;
+    }
+    .qbit-ok   { color: #3fb950; font-weight: 700; }
+    .qbit-warn { color: var(--warn-text); font-weight: 700; }
+    .qbit-bad  { color: var(--cat-c); font-weight: 700; }
+
+    /* ───── Classical Comparison ───── */
+    .classical-comparison {
+      font-size: 0.85rem;
+      line-height: 1.75;
+      color: #cdd9e5;
+    }
+    .classical-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin: 0 2px;
+    }
+    .tag-strong { background: rgba(255,125,69,0.2); color: var(--cat-c); }
+    .tag-quantum { background: rgba(0,83,214,0.2); color: #7aadff; }
+    .tag-mixed  { background: rgba(101,203,243,0.15); color: var(--cat-b); }
+
+    /* ───── Score Bars ───── */
+    .score-bars { display: flex; flex-direction: column; gap: 8px; }
+    .score-bar-row {
+      display: grid;
+      grid-template-columns: 160px 1fr 32px;
+      align-items: center;
+      gap: 8px;
+    }
+    .score-bar-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .score-bar-track {
+      height: 6px;
+      background: var(--surface2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .score-bar-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ───── Footer ───── */
+    .footer {
+      max-width: 1280px;
+      margin: 32px auto 0;
+      padding: 0 24px;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    /* ───── Responsive ───── */
+    @media (max-width: 1100px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .content-row { grid-template-columns: 1fr; }
+      .classification-panel { flex-direction: column; }
+      .badge-block { width: 100%; flex-direction: row; padding: 14px 18px; gap: 14px; }
+    }
+    @media (max-width: 640px) {
+      .header { padding: 16px 16px; }
+      .main-grid { padding: 0 12px; }
+      .qubit-stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════ -->
+<header class="header">
+  <div class="header-logo">
+    <!-- SVG Logo: stylized "Q" with quantum circuit motif -->
+    <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="QADF Explorer Logo">
+      <rect width="42" height="42" rx="10" fill="#0053D6" opacity="0.18"/>
+      <circle cx="21" cy="19" r="9" stroke="#58a6ff" stroke-width="2"/>
+      <circle cx="21" cy="19" r="4.5" fill="#0053D6" opacity="0.6"/>
+      <line x1="27.5" y1="25.5" x2="33" y2="31" stroke="#58a6ff" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- circuit dots -->
+      <circle cx="12" cy="35" r="1.5" fill="#65CBF3"/>
+      <circle cx="21" cy="37" r="1.5" fill="#65CBF3"/>
+      <circle cx="30" cy="35" r="1.5" fill="#65CBF3"/>
+      <line x1="12" y1="35" x2="21" y2="37" stroke="#65CBF3" stroke-width="0.8" opacity="0.5"/>
+      <line x1="21" y1="37" x2="30" y2="35" stroke="#65CBF3" stroke-width="0.8" opacity="0.5"/>
+    </svg>
+    <div>
+      <h1>QADF Explorer</h1>
+      <p>Quantum Amenability Decision Framework · Protein Subproblem Classifier</p>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════
+     GLOBAL DISCLAIMER
+     ═══════════════════════════════════════════════════════ -->
+<div class="disclaimer-global">
+  <span>⚠️</span>
+  <span><strong>All quantum results in this project are classically simulated. No QPU hardware was used.</strong> Quantum circuit simulation is via PennyLane default.qubit or Qiskit Aer statevector.</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN GRID
+     ═══════════════════════════════════════════════════════ -->
+<div class="main-grid">
+
+  <!-- ── LEFT: Controls ── -->
+  <div class="panel" id="controls-panel">
+    <div class="panel-title">Configuration</div>
+
+    <div class="control-group">
+      <label for="sel-problem">Problem Class</label>
+      <select id="sel-problem">
+        <option value="backbone">Global backbone folding</option>
+        <option value="peptide">Short peptide conformational search</option>
+        <option value="loop" selected>Catalytic loop refinement</option>
+        <option value="sidechain">Side-chain packing (rotamer optimization)</option>
+        <option value="energy">Constrained local energy minimization</option>
+        <option value="disulfide">Disulfide bond network optimization</option>
+        <option value="interface">Protein–protein interface packing</option>
+        <option value="disorder">Disordered region ensemble sampling</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label for="sl-residues">Residue Count: <span id="lbl-residues">10</span></label>
+      <div class="slider-wrapper">
+        <input type="range" id="sl-residues" min="1" max="30" value="10" step="1" />
+        <span class="slider-value" id="sv-residues">10</span>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label for="sel-encoding">Encoding Scheme</label>
+      <select id="sel-encoding">
+        <option value="onehot">One-hot</option>
+        <option value="gray">Gray code</option>
+        <option value="compact" selected>Compact binary</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label for="sl-budget">Qubit Budget: <span id="lbl-budget">16</span></label>
+      <div class="slider-wrapper">
+        <input type="range" id="sl-budget" min="4" max="25" value="16" step="1" />
+        <span class="slider-value" id="sv-budget">16</span>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label for="sel-noise">Noise Level</label>
+      <select id="sel-noise">
+        <option value="ideal">Ideal (noiseless)</option>
+        <option value="low" selected>Low noise (ε = 0.001)</option>
+        <option value="high">High noise (ε = 0.01)</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label for="sel-optim">Optimization Strategy</label>
+      <select id="sel-optim">
+        <option value="qaoa1" selected>QAOA p=1</option>
+        <option value="qaoa2">QAOA p=2</option>
+        <option value="vqe">VQE</option>
+        <option value="sa">Classical SA</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label for="sel-baseline">Classical Baseline Strength</label>
+      <select id="sel-baseline">
+        <option value="greedy">Greedy</option>
+        <option value="sa">Simulated Annealing</option>
+        <option value="flowpacker" selected>FlowPacker-class</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ── RIGHT: Results ── -->
+  <div class="right-col">
+
+    <!-- Classification Badge + Stats -->
+    <div class="panel">
+      <div class="panel-title">QADF Classification</div>
+      <div class="classification-panel">
+        <div class="badge-block" id="badge-block">
+          <div class="badge-letter" id="badge-letter">B</div>
+          <div>
+            <div class="badge-label" id="badge-label">Medium-term</div>
+            <div class="badge-score" id="badge-score">Score: 5.8 / 10</div>
+          </div>
+        </div>
+        <div class="classification-detail">
+          <div class="qubit-stats">
+            <div class="stat-card">
+              <span class="stat-label">Qubits Required</span>
+              <div class="stat-val" id="stat-qubits">—</div>
+              <div class="stat-sub" id="stat-qubits-sub">for selected encoding</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Budget Remaining</span>
+              <div class="stat-val" id="stat-budget-rem">—</div>
+              <div class="stat-sub" id="stat-budget-sub">qubits available</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Overall Score</span>
+              <div class="stat-val" id="stat-overall">—</div>
+              <div class="stat-sub">weighted QADF average</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Noise Penalty</span>
+              <div class="stat-val" id="stat-noise">—</div>
+              <div class="stat-sub">from noise level setting</div>
+            </div>
+          </div>
+          <div class="disclaimer-box">
+            ⚠️ All quantum results in this project are classically simulated. No QPU hardware was used. Quantum circuit simulation is via PennyLane default.qubit or Qiskit Aer statevector.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scores Chart + Score Bars -->
+    <div class="content-row">
+      <div class="panel">
+        <div class="panel-title">9-Dimension Score Radar</div>
+        <div class="chart-container">
+          <canvas id="radar-chart"></canvas>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Dimension Breakdown</div>
+        <div class="score-bars" id="score-bars"></div>
+        <div style="margin-top:14px;">
+          <div class="disclaimer-box">
+            ⚠️ All quantum results in this project are classically simulated. No QPU hardware was used.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottleneck Explanation -->
+    <div class="panel">
+      <div class="panel-title">Bottleneck Analysis &amp; Explanation</div>
+      <div class="bottleneck-text" id="bottleneck-text"></div>
+    </div>
+
+    <!-- Scaling Preview + Classical Comparison -->
+    <div class="content-row">
+      <div class="panel">
+        <div class="panel-title">Qubit Scaling Preview</div>
+        <table class="scaling-table" id="scaling-table">
+          <thead>
+            <tr>
+              <th>Residues</th>
+              <th>One-hot</th>
+              <th>Gray code</th>
+              <th>Compact bin.</th>
+              <th>Budget</th>
+            </tr>
+          </thead>
+          <tbody id="scaling-tbody"></tbody>
+        </table>
+        <div style="margin-top:12px;">
+          <div class="disclaimer-box">
+            ⚠️ All quantum results classically simulated. No QPU hardware used.
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Classical Comparison</div>
+        <div class="classical-comparison" id="classical-text"></div>
+      </div>
+    </div>
+
+  </div><!-- /right-col -->
+</div><!-- /main-grid -->
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════ -->
+<footer class="footer">
+  QADF Explorer &nbsp;|&nbsp; Tommaso Marena, Independent Undergraduate Researcher &nbsp;|&nbsp;
+  The Catholic University of America &nbsp;|&nbsp; 2026 &nbsp;|&nbsp;
+  No QPU hardware used — all quantum results classically simulated
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT — SCORING ENGINE + REACTIVE UI
+     ═══════════════════════════════════════════════════════ -->
+<script>
+"use strict";
+
+// ──────────────────────────────────────────────────────────────
+// LOOK-UP TABLES
+// ──────────────────────────────────────────────────────────────
+const PROBLEM_LABELS = {
+  backbone:  "Global backbone folding",
+  peptide:   "Short peptide conformational search",
+  loop:      "Catalytic loop refinement",
+  sidechain: "Side-chain packing (rotamer opt.)",
+  energy:    "Constrained local energy minimization",
+  disulfide: "Disulfide bond network optimization",
+  interface: "Protein–protein interface packing",
+  disorder:  "Disordered region ensemble sampling",
+};
+
+const SCORE_DISCRETENESS = {
+  backbone:2, peptide:4, loop:5, sidechain:8, energy:6,
+  disulfide:7, interface:5, disorder:2
+};
+const SCORE_QUBO_COMPAT = {
+  backbone:2, peptide:4, loop:5, sidechain:9, energy:6,
+  disulfide:8, interface:5, disorder:2
+};
+const SCORE_BIO_IMPORTANCE = {
+  backbone:10, peptide:6, loop:8, sidechain:9, energy:6,
+  disulfide:7, interface:8, disorder:7
+};
+
+// Classical baseline difficulty (higher = harder for classical = better for quantum)
+const CLASSICAL_DIFFICULTY = { greedy:3, sa:5, flowpacker:7 };
+const BASELINE_LABELS      = { greedy:"Greedy", sa:"Simulated Annealing", flowpacker:"FlowPacker-class" };
+const NOISE_PENALTY        = { ideal:0, low:1, high:3 };
+const OPTIM_LABELS         = { qaoa1:"QAOA p=1", qaoa2:"QAOA p=2", vqe:"VQE", sa:"Classical SA" };
+
+// Dimension names for radar
+const DIM_NAMES = [
+  "Discreteness",
+  "QUBO Compat.",
+  "Classical Baseline",
+  "Qubit Feasibility",
+  "Noise Tolerance",
+  "Bio. Importance",
+  "Quantum Benefit",
+  "Encoding Overhead",
+  "Optim. Depth",
+];
+
+// ──────────────────────────────────────────────────────────────
+// QUBIT COUNT FORMULA
+// ──────────────────────────────────────────────────────────────
+function qubitCount(residues, encoding) {
+  if (encoding === "onehot")  return residues * 3;
+  if (encoding === "gray")    return residues * 2;
+  // compact binary: log2(3) * residues ≈ 1.585 * residues
+  return Math.ceil(Math.log2(3) * residues);
+}
+
+// ──────────────────────────────────────────────────────────────
+// MAIN SCORING FUNCTION
+// ──────────────────────────────────────────────────────────────
+function computeScores(problem, residues, encoding, budget, noise, optim, baseline) {
+  const qc         = qubitCount(residues, encoding);
+  const noisePen   = NOISE_PENALTY[noise];
+  const difficulty = CLASSICAL_DIFFICULTY[baseline];
+
+  const s_disc   = SCORE_DISCRETENESS[problem];
+  const s_qubo   = SCORE_QUBO_COMPAT[problem];
+  const s_cb     = 10 - difficulty;          // classical baseline score (low = hard = quantum benefit)
+  const s_qf     = Math.max(0, 10 - Math.max(0, qc - 20));
+  const s_nt     = Math.max(0, 8 - noisePen * 2);
+  const s_bio    = SCORE_BIO_IMPORTANCE[problem];
+
+  // Quantum benefit composite
+  const s_qb = Math.max(0, Math.min(10,
+    (s_disc + s_qubo + s_qf - s_cb) / 3
+  ));
+
+  // Encoding overhead (penalty for one-hot vs compact)
+  const encFactor = encoding === "onehot" ? 3 : encoding === "gray" ? 2 : 1.585;
+  const s_enc = Math.max(0, 10 - (encFactor - 1) * 2.5);
+
+  // Optimization depth score
+  const optimDepth = { qaoa1:4, qaoa2:6, vqe:5, sa:10 }[optim];
+  const s_optim = optimDepth;
+
+  // Overall weighted average
+  const weights = [0.12, 0.12, 0.10, 0.15, 0.10, 0.10, 0.15, 0.08, 0.08];
+  const dims    = [s_disc, s_qubo, s_cb, s_qf, s_nt, s_bio, s_qb, s_enc, s_optim];
+  const overall = dims.reduce((acc, v, i) => acc + v * weights[i], 0);
+
+  // Category
+  let category;
+  if (overall >= 7 && qc <= budget) category = "A";
+  else if (overall >= 4)            category = "B";
+  else                              category = "C";
+
+  return { dims, overall, category, qc, noisePen, s_disc, s_qubo, s_qf };
+}
+
+// ──────────────────────────────────────────────────────────────
+// BOTTLENECK TEXT GENERATOR
+// ──────────────────────────────────────────────────────────────
+function generateBottleneck(problem, residues, encoding, budget, noise, optim, baseline, scores) {
+  const { qc, overall, category, dims } = scores;
+  const encLabel = { onehot:"one-hot", gray:"gray code", compact:"compact binary" }[encoding];
+  const encMult  = { onehot:"3×", gray:"2×", compact:"~1.6×" }[encoding];
+  const over     = qc > budget;
+  const dimIdx   = dims.indexOf(Math.min(...dims));
+  const bottleneckName = DIM_NAMES[dimIdx];
+
+  let html = `<p>For <strong>${PROBLEM_LABELS[problem]}</strong> with <strong>${residues} residues</strong> using <strong>${encLabel} encoding</strong>:</p>`;
+
+  // Qubit requirement sentence
+  html += `<p style="margin-top:10px;">This configuration requires <strong>${qc} qubits</strong> (${encMult} residues).`;
+  if (over) {
+    html += ` This <strong>exceeds the ${budget}-qubit budget</strong> by ${qc - budget} qubits.`;
+  } else {
+    html += ` This fits within the <strong>${budget}-qubit budget</strong> with ${budget - qc} qubits to spare.`;
+  }
+  html += `</p>`;
+
+  // Dominant bottleneck highlight
+  const bottleneckDesc = {
+    "Discreteness": "low problem discreteness makes QUBO mapping less natural",
+    "QUBO Compat.": "poor QUBO compatibility limits direct quantum encoding",
+    "Classical Baseline": "a strong classical baseline (e.g. FlowPacker) reduces the practical quantum advantage",
+    "Qubit Feasibility": "qubit overhead exceeds near-term hardware limits",
+    "Noise Tolerance": "high noise degrades solution quality for this circuit depth",
+    "Bio. Importance": "limited biological relevance reduces deployment priority",
+    "Quantum Benefit": "low composite quantum benefit from discreteness, QUBO fit, and qubit cost",
+    "Encoding Overhead": "the chosen encoding scheme inflates qubit requirements",
+    "Optim. Depth": "the selected optimizer requires deep circuits not suitable for NISQ",
+  };
+
+  html += `<div class="bottleneck-highlight">Dominant bottleneck: <strong>${bottleneckName}</strong> — ${bottleneckDesc[bottleneckName]}.</div>`;
+
+  // Suggestions
+  const suggestions = [];
+  if (encoding === "onehot" && residues > 8) {
+    const compact = qubitCount(residues, "compact");
+    suggestions.push(`Switch to <strong>compact binary</strong> encoding to reduce qubit count from ${qc} → ${compact}`);
+  }
+  if (noise === "high") {
+    suggestions.push(`Consider <strong>Low noise</strong> or <strong>Ideal</strong> simulation to recover ~${2 * NOISE_PENALTY["high"]} score points on noise tolerance`);
+  }
+  if (optim === "qaoa2" && overall < 6) {
+    suggestions.push(`<strong>QAOA p=1</strong> or <strong>VQE</strong> would reduce circuit depth and noise sensitivity`);
+  }
+  if (baseline === "flowpacker" && dims[2] < 4) {
+    suggestions.push(`FlowPacker-class methods are mature and hard to beat — quantum advantage is most plausible for <strong>loop refinement</strong> or <strong>disulfide networks</strong> where QUBO mapping is tighter`);
+  }
+  if (residues > 20) {
+    suggestions.push(`Reducing to <strong>≤ 15 residues</strong> would improve feasibility without losing biochemical relevance for loop refinement tasks`);
+  }
+
+  if (suggestions.length > 0) {
+    html += `<div class="recommendation">💡 Suggestions: ${suggestions.join("; ")}.</div>`;
+  }
+
+  // Category sentence
+  html += `<p style="margin-top:12px;">Overall QADF score: <strong>${overall.toFixed(2)}/10</strong> → `;
+  if (category === "A") {
+    html += `<span style="color:#7aadff;font-weight:700;">Category A — Near-term hybrid candidate.</span> This problem is well-suited for near-term quantum/classical hybrid solvers.`;
+  } else if (category === "B") {
+    html += `<span style="color:var(--cat-b);font-weight:700;">Category B — Medium-term target.</span> Promising but requires hardware improvements or reduced problem size.`;
+  } else {
+    html += `<span style="color:var(--cat-c);font-weight:700;">Category C — Poor near-term target.</span> Classical methods dominate and qubit requirements are impractical on current hardware.`;
+  }
+  html += `</p>`;
+
+  return html;
+}
+
+// ──────────────────────────────────────────────────────────────
+// CLASSICAL COMPARISON TEXT
+// ──────────────────────────────────────────────────────────────
+function generateClassical(problem, baseline, scores) {
+  const { overall, category } = scores;
+  const bl = BASELINE_LABELS[baseline];
+
+  const strength = {
+    greedy:     { label: "weak", tag: "tag-quantum", summary: "easily outpaced by quantum hybrid approaches even at shallow circuit depth" },
+    sa:         { label: "moderate", tag: "tag-mixed", summary: "competitive for small systems but may stall in rugged energy landscapes with many local minima" },
+    flowpacker: { label: "strong", tag: "tag-strong", summary: "a state-of-the-art rotamer packing engine; near-impossible to outperform without significant quantum advantage" },
+  }[baseline];
+
+  const problemVsClassical = {
+    backbone:  "Global backbone folding has many local minima but extremely high qubit overhead — classical MD/MC methods remain dominant.",
+    peptide:   "Short peptides can be exhaustively searched classically; quantum advantage is marginal unless constrained QUBO structure is exploited.",
+    loop:      "Loop refinement is a natural QUBO subproblem. Quantum hybrid methods show promise here, especially for rigid loops with discrete conformations.",
+    sidechain: "Rotamer optimization is the canonical QUBO target. QAOA and VQE have been validated on small instances, but FlowPacker is very mature.",
+    energy:    "Local energy minimization has continuous energy landscapes — not ideal for QUBO. Classical gradient methods excel.",
+    disulfide: "Disulfide bond networks have natural graph structure and hard combinatorial constraints — genuine QUBO fit. Quantum benefit is real.",
+    interface: "Interface packing inherits rotamer complexity. Classical tools are strong, but quantum could help for large multi-chain problems.",
+    disorder:  "Disordered ensembles require broad conformational sampling — quantum speedup is highly speculative and theoretically unproven.",
+  }[problem];
+
+  let html = `<p>Classical baseline: <span class="classical-tag ${strength.tag}">${bl}</span> — ${strength.summary}.</p>`;
+  html += `<p style="margin-top:10px;">${problemVsClassical}</p>`;
+
+  if (category === "A") {
+    html += `<p style="margin-top:10px;"><span class="classical-tag tag-quantum">Quantum-favorable</span> The QADF score of <strong>${overall.toFixed(2)}</strong> suggests genuine near-term competitiveness with ${bl}. Hybrid quantum–classical pipeline recommended.</p>`;
+  } else if (category === "B") {
+    html += `<p style="margin-top:10px;"><span class="classical-tag tag-mixed">Mixed verdict</span> Quantum methods may offer advantage on specific sub-instances. Use ${bl} as a warm-start heuristic for QAOA initialization.</p>`;
+  } else {
+    html += `<p style="margin-top:10px;"><span class="classical-tag tag-strong">Classical dominates</span> With a QADF score of <strong>${overall.toFixed(2)}</strong>, ${bl} is the recommended approach. Revisit when fault-tolerant hardware matures.</p>`;
+  }
+
+  return html;
+}
+
+// ──────────────────────────────────────────────────────────────
+// SCALING TABLE
+// ──────────────────────────────────────────────────────────────
+function buildScalingTable(currentResidues, budget, currentEncoding) {
+  const rows = [5, 10, 15, 20, 25];
+  let html = "";
+  rows.forEach(r => {
+    const qoh = qubitCount(r, "onehot");
+    const qgr = qubitCount(r, "gray");
+    const qcp = qubitCount(r, "compact");
+
+    const isCurrentRow = (r === currentResidues);
+
+    const cls = (q) => {
+      if (q <= budget) return "qbit-ok";
+      if (q <= budget * 1.5) return "qbit-warn";
+      return "qbit-bad";
+    };
+
+    const encHighlight = (enc, val) => {
+      const base = `<span class="${cls(val)}">${val}</span>`;
+      return (enc === currentEncoding) ? `<strong>${base}</strong>` : base;
+    };
+
+    html += `<tr${isCurrentRow ? ' class="highlight-row"' : ''}>
+      <td>${r}${isCurrentRow ? " ←" : ""}</td>
+      <td>${encHighlight("onehot", qoh)}</td>
+      <td>${encHighlight("gray", qgr)}</td>
+      <td>${encHighlight("compact", qcp)}</td>
+      <td>${budget}</td>
+    </tr>`;
+  });
+  document.getElementById("scaling-tbody").innerHTML = html;
+}
+
+// ──────────────────────────────────────────────────────────────
+// SCORE BARS
+// ──────────────────────────────────────────────────────────────
+function renderScoreBars(dims) {
+  const colors = [
+    "#58a6ff","#79c0ff","#a5d6ff","#3fb950","#56d364",
+    "#bc8cff","#ff9bce","#ffa657","#ff7b72"
+  ];
+
+  const html = dims.map((val, i) => {
+    const pct = (Math.max(0, Math.min(10, val)) / 10 * 100).toFixed(1);
+    return `<div class="score-bar-row">
+      <span class="score-bar-label">${DIM_NAMES[i]}</span>
+      <div class="score-bar-track">
+        <div class="score-bar-fill" style="width:${pct}%;background:${colors[i]};"></div>
+      </div>
+      <span class="score-bar-num">${val.toFixed(1)}</span>
+    </div>`;
+  }).join("");
+
+  document.getElementById("score-bars").innerHTML = html;
+}
+
+// ──────────────────────────────────────────────────────────────
+// CHART.JS RADAR
+// ──────────────────────────────────────────────────────────────
+let radarChart = null;
+
+function initChart() {
+  const ctx = document.getElementById("radar-chart").getContext("2d");
+  radarChart = new Chart(ctx, {
+    type: "radar",
+    data: {
+      labels: DIM_NAMES,
+      datasets: [{
+        label: "QADF Score",
+        data: Array(9).fill(5),
+        backgroundColor: "rgba(88,166,255,0.15)",
+        borderColor: "rgba(88,166,255,0.85)",
+        borderWidth: 2,
+        pointBackgroundColor: "rgba(88,166,255,1)",
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      animation: { duration: 350 },
+      scales: {
+        r: {
+          min: 0,
+          max: 10,
+          ticks: {
+            stepSize: 2,
+            color: "#8b949e",
+            backdropColor: "transparent",
+            font: { size: 10 },
+          },
+          grid:        { color: "rgba(48,54,61,0.9)" },
+          angleLines:  { color: "rgba(48,54,61,0.9)" },
+          pointLabels: {
+            color: "#8b949e",
+            font: { size: 10 },
+          }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.parsed.r.toFixed(2)} / 10`
+          }
+        }
+      }
+    }
+  });
+}
+
+function updateChart(dims) {
+  if (!radarChart) return;
+  radarChart.data.datasets[0].data = dims.map(d => parseFloat(d.toFixed(2)));
+  radarChart.update();
+}
+
+// ──────────────────────────────────────────────────────────────
+// BADGE UPDATE
+// ──────────────────────────────────────────────────────────────
+function updateBadge(category, overall, qc, budget, noisePen) {
+  const block  = document.getElementById("badge-block");
+  const letter = document.getElementById("badge-letter");
+  const label  = document.getElementById("badge-label");
+  const score  = document.getElementById("badge-score");
+
+  block.className = "badge-block badge-" + category.toLowerCase();
+  letter.textContent = category;
+
+  const labelMap = {
+    A: "Near-term hybrid candidate",
+    B: "Medium-term target",
+    C: "Poor near-term target",
+  };
+  label.textContent  = labelMap[category];
+  score.textContent  = `Score: ${overall.toFixed(2)} / 10`;
+
+  // Stats
+  const qEl  = document.getElementById("stat-qubits");
+  const brEl = document.getElementById("stat-budget-rem");
+  qEl.textContent  = qc;
+  qEl.className    = "stat-val " + (qc > budget ? "over" : "ok");
+  const rem = budget - qc;
+  brEl.textContent = rem >= 0 ? `+${rem}` : `${rem}`;
+  brEl.className   = "stat-val " + (rem >= 0 ? "ok" : "over");
+
+  document.getElementById("stat-overall").textContent = overall.toFixed(2);
+  document.getElementById("stat-noise").textContent   = noisePen;
+}
+
+// ──────────────────────────────────────────────────────────────
+// MASTER UPDATE
+// ──────────────────────────────────────────────────────────────
+function update() {
+  const problem  = document.getElementById("sel-problem").value;
+  const residues = parseInt(document.getElementById("sl-residues").value);
+  const encoding = document.getElementById("sel-encoding").value;
+  const budget   = parseInt(document.getElementById("sl-budget").value);
+  const noise    = document.getElementById("sel-noise").value;
+  const optim    = document.getElementById("sel-optim").value;
+  const baseline = document.getElementById("sel-baseline").value;
+
+  // Update slider labels
+  document.getElementById("sv-residues").textContent = residues;
+  document.getElementById("lbl-residues").textContent = residues;
+  document.getElementById("sv-budget").textContent   = budget;
+  document.getElementById("lbl-budget").textContent  = budget;
+
+  const scores = computeScores(problem, residues, encoding, budget, noise, optim, baseline);
+
+  updateBadge(scores.category, scores.overall, scores.qc, budget, scores.noisePen);
+  updateChart(scores.dims);
+  renderScoreBars(scores.dims);
+  document.getElementById("bottleneck-text").innerHTML = generateBottleneck(
+    problem, residues, encoding, budget, noise, optim, baseline, scores
+  );
+  document.getElementById("classical-text").innerHTML = generateClassical(problem, baseline, scores);
+  buildScalingTable(residues, budget, encoding);
+}
+
+// ──────────────────────────────────────────────────────────────
+// WIRE EVENTS
+// ──────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  initChart();
+
+  const ids = [
+    "sel-problem", "sel-encoding", "sel-noise", "sel-optim", "sel-baseline",
+    "sl-residues", "sl-budget"
+  ];
+  ids.forEach(id => {
+    document.getElementById(id).addEventListener("input", update);
+    document.getElementById(id).addEventListener("change", update);
+  });
+
+  update(); // initial render
+});
+</script>
+</body>
+</html>
