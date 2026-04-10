@@ -1,0 +1,35 @@
+# ChiralBoltz fine-tuning configuration
+# Mirror-image augmentation pipeline on top of Boltz-2
+
+# --- Chiral loss ---
+lambda_chiral: 1.0
+chiral_loss_warmup_steps: 5000
+chiral_loss_mode: combined       # sign | mse | combined
+chiral_sign_margin: 0.1
+chiral_mse_weight: 0.1
+
+# --- Mirror augmentation ---
+p_mirror: 0.5                    # 50% of training examples are mirrored
+mirror_seed: 42
+
+# --- Optimizer ---
+learning_rate: 1.0e-4
+min_learning_rate: 1.0e-6
+weight_decay: 0.0
+max_steps: 50000
+
+# --- Boltz-2 checkpoint ---
+boltz2_checkpoint: null           # Set to path of pre-trained Boltz-2 weights
+
+# --- Data (set these to your local paths) ---
+target_dir: SET_PATH_HERE
+msa_dir: SET_PATH_HERE
+max_tokens: 512
+max_atoms: 4608
+
+# --- Training ---
+batch_size: 4
+num_workers: 4
+devices: 1
+precision: bf16-mixed
+output_dir: outputs/chiralboltz

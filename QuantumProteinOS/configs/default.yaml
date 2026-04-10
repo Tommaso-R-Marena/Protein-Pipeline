@@ -1,0 +1,54 @@
+pipeline:
+  mode: cpu  # or 'gpu'
+  verbose: true
+
+disorder:
+  model_version: v6
+  esm_model: esm2_t6_8M_UR50D  # CPU default
+  pca_components: 48
+  n_scales: 7
+  ensemble: [lightgbm, xgboost]
+  disorder_threshold: 0.5
+
+conformational:
+  n_nma_modes: 10
+  amplitude_scales: [2.0, 6.0]
+  rigid_body_translation: [5.0, 15.0]
+  rigid_body_rotation: [20.0, 45.0]
+
+qicess:
+  weights:
+    quantum: 0.30
+    retrieval: 0.25
+    plddt: 0.25
+    pae: 0.15
+    rama: 0.05
+  contact_cutoff: 8.0
+
+quantum:
+  simulator: default.qubit  # Always classically simulated
+  max_qubits: 25             # Hard ceiling for classical simulation
+  qaoa_p: 4
+  n_shots: 512
+  n_iter: 3
+  cvar_alpha: 0.20           # Top-20% CVaR
+  use_warm_start: true
+  use_xy_mixer: true
+  one_hot_penalty_lambda: 5.0
+  ogp_frustration_threshold: 0.3
+  ogp_density_threshold: 0.4
+
+rotamers:
+  window_size: 4
+  n_rotamers: 3
+  dunbrack_resolution_deg: 60
+
+chirality:
+  planarity_tolerance_deg: 6.0
+  ramachandran_grid: data/ramachandran_grid.json
+  correct_af3_output: true
+
+benchmark:
+  disorder_dataset: disprot
+  autoinhibited_n: 22
+  fold_switch_n: 5  # demo

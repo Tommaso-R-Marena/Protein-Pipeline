@@ -1,0 +1,24 @@
+# ChiralBoltz evaluation configuration
+# Chirality violation rate benchmark (Childs et al. 2025)
+
+# --- Model ---
+checkpoint: null                  # Path to ChiralBoltz fine-tuned checkpoint
+
+# --- Evaluation ---
+n_seeds: 5                        # Number of diffusion seeds per system
+eps: 1.0e-3                       # Planar threshold for chiral volume
+
+# --- Benchmark systems ---
+# Uses the built-in Childs et al. 2025 benchmark set by default
+# Override with a custom list of PDB IDs if needed
+benchmark: childs2025             # childs2025 | custom
+custom_pdb_ids: []                # List of PDB IDs for custom benchmark
+
+# --- Output ---
+output_dir: outputs/eval
+save_per_residue: true            # Save per-residue chirality results
+save_summary: true                # Save summary CSV
+
+# --- Device ---
+devices: 1
+precision: bf16-mixed
