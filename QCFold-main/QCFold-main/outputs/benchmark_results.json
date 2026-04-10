@@ -1,0 +1,97 @@
+{
+  "method": "QCFold",
+  "n_proteins": 5,
+  "n_success": 3,
+  "success_rate": 0.6,
+  "success_rate_ci": [
+    0.2307242812760128,
+    0.882379225767352
+  ],
+  "mean_fold_a_tm": 1.0,
+  "mean_fold_b_tm": 0.5799275679457627,
+  "stratified": {
+    "by_difficulty": {
+      "standard": {
+        "n_total": 1,
+        "n_success": 0,
+        "success_rate": 0.0
+      },
+      "hard": {
+        "n_total": 3,
+        "n_success": 2,
+        "success_rate": 0.6666666666666666
+      },
+      "very_hard": {
+        "n_total": 1,
+        "n_success": 1,
+        "success_rate": 1.0
+      }
+    },
+    "by_training_status": {
+      "in_training": {
+        "n_total": 5,
+        "n_success": 3,
+        "success_rate": 0.6
+      }
+    }
+  },
+  "ablations": {
+    "no_quantum": {
+      "mean_energy": -50.488809976703635
+    },
+    "random_assignment": {
+      "mean_fold_a_tm": 0.026303448840824122,
+      "mean_fold_b_tm": 0.039481037994773344,
+      "success_rate": 0.0
+    },
+    "all_fold_a": {
+      "mean_fold_a_tm": 1.0,
+      "mean_fold_b_tm": 0.07999485225003708,
+      "success_rate": 0.0
+    },
+    "all_fold_b": {
+      "mean_fold_a_tm": 0.07999485225003733,
+      "mean_fold_b_tm": 1.0,
+      "success_rate": 0.0
+    }
+  },
+  "baselines": {
+    "AF3": {
+      "baseline_rate": 0.076,
+      "qcfold_rate": 0.6,
+      "difference": 0.524,
+      "source": "Ronish et al. Nature Comms 2024"
+    },
+    "AF2_default": {
+      "baseline_rate": 0.087,
+      "qcfold_rate": 0.6,
+      "difference": 0.513,
+      "source": "Ronish et al. Nature Comms 2024"
+    },
+    "AF2_templates": {
+      "baseline_rate": 0.12,
+      "qcfold_rate": 0.6,
+      "difference": 0.48,
+      "source": "Ronish et al. Nature Comms 2024"
+    },
+    "AF_cluster": {
+      "baseline_rate": 0.196,
+      "qcfold_rate": 0.6,
+      "difference": 0.40399999999999997,
+      "source": "Ronish et al. Nature Comms 2024"
+    },
+    "CF_random": {
+      "baseline_rate": 0.348,
+      "qcfold_rate": 0.6,
+      "difference": 0.252,
+      "source": "Lee et al. Nature Comms 2025"
+    },
+    "All_AF2_combined": {
+      "baseline_rate": 0.348,
+      "qcfold_rate": 0.6,
+      "difference": 0.252,
+      "source": "Ronish et al. Nature Comms 2024"
+    }
+  },
+  "wall_time": 1.5855541229248047
+}
